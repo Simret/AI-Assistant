@@ -143,7 +143,7 @@ class Graph_Summarizer:
     def get_graph_info(self):
         # get the graph summary from the annotation endpoint to get the summary of the graph
         pass
-
+    
     def summary(self,graph,user_query=None,graph_id=None):
         prev_summery=[]
         try:

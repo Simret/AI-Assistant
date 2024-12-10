@@ -10,6 +10,7 @@ load_dotenv()
 # JWT Secret Key
 JWT_SECRET = os.getenv("JWT_SECRET")
 
+
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):

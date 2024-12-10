@@ -85,17 +85,17 @@ def create_app():
 
     # intialize qdrant connection
     # uploading data first time
-    client = Qdrant()
+    # client = Qdrant()
 
-    collections = client.client.get_collections()
-    if collections and collections.collections:
-        logger.info("collections on the qdrant database already exist skipping population data")
-    else:
-        logger.info('uploading sample web data to qdrant db')
-        with open('sample_data.json') as data:
-            data = json.load(data)
-        rag = RAG(client,advanced_llm)
-        rag.save_doc_to_rag(data=data)
+    # collections = client.client.get_collections()
+    # if collections and collections.collections:
+    #     logger.info("collections on the qdrant database already exist skipping population data")
+    # else:
+    #     logger.info('uploading sample web data to qdrant db')
+    #     with open('sample_data.json') as data:
+    #         data = json.load(data)
+    #     rag = RAG(client,advanced_llm)
+    #     rag.save_doc_to_rag(data=data)
 
     # Register routes
     app.register_blueprint(main_bp)
