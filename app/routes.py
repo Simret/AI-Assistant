@@ -1,5 +1,5 @@
 from app.lib.auth import token_required
-from flask import Blueprint, request, current_app
+from flask import Blueprint, request, current_app, jsonify
 from dotenv import load_dotenv
 import traceback
 import json
@@ -22,7 +22,11 @@ def process_query(current_user_id, auth_token):
         ai_assistant = current_app.config['ai_assistant']
     
         if not request.form and 'file' not in request.files:
-            return "Null request is Invalid format.", 400
+            return jsonify({
+                "error": "Invalid request format.",
+                "message": "No form data found in the request. Please provide the required fields."
+            }), 400
+            
 
         data = request.form
         query = data.get('query', None)
@@ -35,7 +39,13 @@ def process_query(current_user_id, auth_token):
         file = None
         if 'file' in request.files:
             file = request.files['file']            
-        
+            # Check if the file has no value (no PDF attached)
+            if not file or file.filename == '':
+                return jsonify({
+                    "error": "No file provided.",
+                    "message": "The 'file' key is empty. Please attach a valid PDF file."
+                }), 400
+                
         response = ai_assistant.assistant_response(
             query=query,
             file=file,

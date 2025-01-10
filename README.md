@@ -159,7 +159,7 @@ Once your environment is configured, you can run the app and use the AI Assistan
 ### 1. Start the application:
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
 **Example using curl:**
