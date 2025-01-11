@@ -45,13 +45,8 @@ def process_query(current_user_id, auth_token):
                     "error": "No file provided.",
                     "message": "The 'file' key is empty. Please attach a valid PDF file."
                 }), 400
-
-        if query and 'file' not in request.files:
-            return jsonify({
-                "error": "Missing input.",
-                "message": "Please attach a PDF file."
-            }), 400
-               
+        
+           
         response = ai_assistant.assistant_response(
             query=query,
             file=file,
