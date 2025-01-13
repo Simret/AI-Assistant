@@ -150,9 +150,15 @@ class AiAssistance:
                 return summary
 
             if query:
-                logger.info("agent calling")
-                response = asyncio.run(self.assistant(query, user_id, token))
-                return response           
+                try:
+                    response = self.rag.get_result_from_rag(query, user_id)
+                    return response
+                except Exception as e:
+                    logger.error("Error in retrieving response", exc_info=True)
+                    return "Error in retrieving response."
+                # logger.info("agent calling")
+                # response = asyncio.run(self.assistant(query, user_id, token))
+                # return response           
 
             if graph:
                 summary = self.graph_summarizer.summary(user_query=query,graph=graph)

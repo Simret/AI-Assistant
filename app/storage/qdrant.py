@@ -9,13 +9,15 @@ from typing import List
 from qdrant_client.models import PointStruct, PointIdsList
 from dotenv import load_dotenv
 import uuid
+import random
+import logging
 
 MAX_MEMORY_LIMIT = 10
 MAX_PDF_LIMIT = 2
 USER_COLLECTION = os.getenv("USER_COLLECTION","USER_COLLECTIONS")
 USER_MEMORY_NAME = "user memories"
 
-import logging
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
@@ -35,19 +37,25 @@ class Qdrant:
 
         try:
             self.client.get_collection(collection_name)
-        except:
-            print("no such collection exists")
+        except Exception:
+
+            logger.info(f"Creating collection: {collection_name}")
+            vector_size = 768  # Adjust based on embedding model
+            #print("no such collection exists")
             try:
+                print("no such collection exists")
                 logger.info(f"creating collection {collection_name}")
                 # Get vector size based on model type
-                vector_size = 1536
+                vector_size = 1536 #if isinstance(llm, "GeminiModel") else 1536
                 self.client.create_collection(
-                    collection_name,
+                    collection_name=collection_name,
                     vectors_config=models.VectorParams(size=vector_size, distance=models.Distance.DOT) )
                 print(f"Collection '{collection_name}' CREATED.")
-            except:
+            except Exception as e:
                 traceback.print_exc()
-                logger.info("error creating a collection")
+                logger.info("error creating a collection {collection_name}: {e}")
+    
+   
 
 
     def upsert_data(self,collection_name,df,user_id=None):
