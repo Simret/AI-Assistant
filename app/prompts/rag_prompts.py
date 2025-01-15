@@ -7,9 +7,11 @@ Information: {retrieved_content}.
 
 Instructions:
 1. Evaluate the provided information for relevance, accuracy, and usefulness to the query.
-2. If the information is sufficient, provide a clear and concise answer directly addressing the query.
-3. Do not mention or refer to "retrieved results" or the source of the information in your response.
-4. If the information is empty, irrelevant, or unhelpful, respond with: "I can't help with your question."
+2. If the query is about detecting links or URLs, specifically search for any mention of links (e.g., starting with http://, https://, or www.) and respond accordingly.
+3. If URLs are detected, list them clearly in your response. If no URLs are found, respond with: "No links or URLs were found in the document."
+4. If the information is sufficient, provide a clear and concise answer directly addressing the query.
+5. Do not mention or refer to "retrieved results" or the source of the information in your response.
+6. If the information is empty, irrelevant, or unhelpful, respond with: "I can't help with your question."
 
 Provide only the answer, and avoid any unnecessary references or disclaimers.
 """

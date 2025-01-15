@@ -9,13 +9,15 @@ from typing import List
 from qdrant_client.models import PointStruct, PointIdsList
 from dotenv import load_dotenv
 import uuid
+import logging
+import random
 
 MAX_MEMORY_LIMIT = 10
 MAX_PDF_LIMIT = 2
 USER_COLLECTION = os.getenv("USER_COLLECTION","USER_COLLECTIONS")
 USER_MEMORY_NAME = "user memories"
 
-import logging
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
@@ -35,19 +37,22 @@ class Qdrant:
 
         try:
             self.client.get_collection(collection_name)
-        except:
-            print("no such collection exists")
+            print(f"Collection '{collection_name}' already exists.")
+        except Exception:
+            logger.info(f"Creating collection: {collection_name}")
+            vector_size = 768  # Adjust based on embedding model
+            #print("no such collection exists")
             try:
                 logger.info(f"creating collection {collection_name}")
                 # Get vector size based on model type
-                vector_size = 768 if isinstance(self.llm, GeminiModel) else 1536
+                #vector_size = 768 #if isinstance(llm, "GeminiModel") else 1536
                 self.client.create_collection(
-                    collection_name,
+                    collection_name=collection_name,
                     vectors_config=models.VectorParams(size=vector_size, distance=models.Distance.DOT) )
                 print(f"Collection '{collection_name}' CREATED.")
-            except:
+            except Exception as e:
                 traceback.print_exc()
-                logger.info("error creating a collection")
+                logger.info("error creating a collection {collection_name}: {e}")
 
 
     def upsert_data(self,collection_name,df,user_id=None):
@@ -86,6 +91,8 @@ class Qdrant:
                     print("Error saving:", e)
             
     def retrieve_data(self,collection, query,user_id,filter=None):
+        self.get_create_collection(collection)  # Ensure the collection exists
+      
         if filter:
             result = self.client.search(
                     collection_name=collection,
